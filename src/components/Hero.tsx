@@ -34,10 +34,10 @@ export default function Hero() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                    <Link href="#projects" className={`${styles.button} ${styles.primaryButton}`}>
+                    <Link href="#projects" className={`${styles.button} ${styles.primaryButton} hover-3d`}>
                         View Projects
                     </Link>
-                    <Link href="/contact" className={`${styles.button} ${styles.secondaryButton}`}>
+                    <Link href="/contact" className={`${styles.button} ${styles.secondaryButton} hover-3d`}>
                         Contact Me
                     </Link>
                 </motion.div>

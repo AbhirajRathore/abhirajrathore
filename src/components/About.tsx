@@ -10,8 +10,17 @@ export default function About() {
                 className={`${styles.container} glass`}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{
+                    scale: 1.01,
+                    y: -5,
+                    rotateX: 1,
+                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 20px rgba(59, 130, 246, 0.2)",
+                    zIndex: 10,
+                    transition: { duration: 0.2 }
+                }}
                 transition={{ duration: 0.8 }}
                 viewport={{ once: true }}
+                style={{ perspective: 1000 }}
             >
                 <h2 className={styles.title}>About Me</h2>
                 <div className={styles.content}>

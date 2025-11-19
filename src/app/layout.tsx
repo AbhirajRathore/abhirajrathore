@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import Navbar from "@/components/Navbar";
+import ThreeBackground from "@/components/ThreeBackground";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${outfit.variable}`}>
         <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+          <ThreeBackground />
           <Navbar />
           {children}
         </ThemeProvider>

@@ -80,6 +80,11 @@
     animation: float 10s infinite ease-in-out;
 }
 
+:global([data-theme='dark']) .backgroundShape {
+    opacity: 0.1;
+    filter: blur(120px);
+}
+
 .shape1 {
     width: 400px;
     height: 400px;

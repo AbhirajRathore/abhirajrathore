@@ -59,8 +59,17 @@ export default function Experience() {
                             className={`${styles.card} glass`}
                             initial={{ opacity: 0, x: -50 }}
                             whileInView={{ opacity: 1, x: 0 }}
+                            whileHover={{
+                                scale: 1.02,
+                                y: -5,
+                                rotateX: 2,
+                                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 20px rgba(59, 130, 246, 0.2)",
+                                zIndex: 10,
+                                transition: { duration: 0.2 }
+                            }}
                             transition={{ duration: 0.5, delay: index * 0.2 }}
                             viewport={{ once: true }}
+                            style={{ perspective: 1000 }}
                         >
                             <h3 className={styles.role}>{exp.role}</h3>
                             <h4 className={styles.company}>{exp.company}</h4>
