@@ -15,25 +15,28 @@ export default function Navbar() {
         setMounted(true);
     }, []);
 
-    if (!mounted) return null;
+    // Prevent hydration mismatch by only rendering the theme dependent parts after mount
+    // But we still want to render the structure
 
     return (
-        <nav className={clsx(styles.navbar, "glass")}>
-            <div className={styles.logo}>
-                <Link href="/">Abhiraj Singh</Link>
-            </div>
-            <div className={styles.links}>
-                <Link href="#about" className={styles.link}>About</Link>
-                <Link href="#experience" className={styles.link}>Experience</Link>
-                <Link href="#projects" className={styles.link}>Projects</Link>
-                <Link href="#skills" className={styles.link}>Skills</Link>
-                <Link href="/contact" className={styles.link}>Contact</Link>
+        <nav className={styles.navbar}>
+            <div className={styles.navContent}>
+                <Link href="/" className={styles.logo}>Abhiraj Singh</Link>
+
+                <div className={styles.links}>
+                    <Link href="#about" className={styles.link}>About</Link>
+                    <Link href="#experience" className={styles.link}>Experience</Link>
+                    <Link href="#projects" className={styles.link}>Projects</Link>
+                    <Link href="#skills" className={styles.link}>Skills</Link>
+                    <Link href="/contact" className={styles.link}>Contact</Link>
+                </div>
+
                 <button
                     className={styles.themeToggle}
                     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                     aria-label="Toggle Theme"
                 >
-                    {theme === "dark" ? <FiSun /> : <FiMoon />}
+                    {mounted ? (theme === "dark" ? <FiSun /> : <FiMoon />) : <FiMoon />}
                 </button>
             </div>
         </nav>
