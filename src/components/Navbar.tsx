@@ -29,6 +29,7 @@ export default function Navbar() {
                     <Link href="#projects" className={styles.link}>Projects</Link>
                     <Link href="#skills" className={styles.link}>Skills</Link>
                     <Link href="/contact" className={styles.link}>Contact</Link>
+                    <Link href="/jobs" className={styles.link} style={{ color: "var(--primary)", fontWeight: 600 }}>Job Tracker</Link>
                 </div>
 
                 <button
