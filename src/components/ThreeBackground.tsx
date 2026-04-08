@@ -1,168 +1,10 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Text, Box, Sphere, Line } from "@react-three/drei";
+import { Sphere, Line } from "@react-three/drei";
 import { useRef, useMemo, useState } from "react";
 import { useTheme } from "next-themes";
 import * as THREE from "three";
-
-// --- Robot & Treadmill Components ---
-
-function Robot({ isDark }: { isDark: boolean }) {
-    const group = useRef<THREE.Group>(null);
-    const leftArm = useRef<THREE.Mesh>(null);
-    const rightArm = useRef<THREE.Mesh>(null);
-    const leftLeg = useRef<THREE.Mesh>(null);
-    const rightLeg = useRef<THREE.Mesh>(null);
-
-    const robotColor = isDark ? "#60a5fa" : "#3b82f6";
-    const jointColor = isDark ? "#94a3b8" : "#64748b";
-
-    useFrame((state) => {
-        const t = state.clock.getElapsedTime() * 12; // Faster jogging
-
-        if (group.current) {
-            group.current.position.y = Math.sin(t * 2) * 0.05;
-        }
-
-        if (leftArm.current && rightArm.current && leftLeg.current && rightLeg.current) {
-            leftArm.current.rotation.x = Math.sin(t) * 0.6;
-            rightArm.current.rotation.x = Math.cos(t) * 0.6;
-            leftLeg.current.rotation.x = Math.cos(t) * 0.6;
-            rightLeg.current.rotation.x = Math.sin(t) * 0.6;
-        }
-    });
-
-    return (
-        <group ref={group} position={[0, 0.5, 0]}>
-            {/* Head */}
-            <Box args={[0.4, 0.4, 0.4]} position={[0, 0.7, 0]}>
-                <meshStandardMaterial color={robotColor} />
-            </Box>
-            {/* Eyes */}
-            <Box args={[0.08, 0.05, 0.05]} position={[-0.1, 0.75, 0.2]}>
-                <meshStandardMaterial color="white" />
-            </Box>
-            <Box args={[0.08, 0.05, 0.05]} position={[0.1, 0.75, 0.2]}>
-                <meshStandardMaterial color="white" />
-            </Box>
-
-            {/* Body */}
-            <Box args={[0.5, 0.6, 0.3]} position={[0, 0.2, 0]}>
-                <meshStandardMaterial color={robotColor} />
-            </Box>
-            <Text
-                position={[0, 0.2, 0.16]}
-                fontSize={0.1}
-                color="white"
-                anchorX="center"
-                anchorY="middle"
-            >
-                GPT-0.5
-            </Text>
-
-            {/* Arms */}
-            <group position={[-0.35, 0.4, 0]}>
-                <Box ref={leftArm} args={[0.15, 0.5, 0.15]} position={[0, -0.2, 0]}>
-                    <meshStandardMaterial color={jointColor} />
-                </Box>
-            </group>
-            <group position={[0.35, 0.4, 0]}>
-                <Box ref={rightArm} args={[0.15, 0.5, 0.15]} position={[0, -0.2, 0]}>
-                    <meshStandardMaterial color={jointColor} />
-                </Box>
-            </group>
-
-            {/* Legs */}
-            <group position={[-0.15, -0.1, 0]}>
-                <Box ref={leftLeg} args={[0.15, 0.6, 0.15]} position={[0, -0.3, 0]}>
-                    <meshStandardMaterial color={jointColor} />
-                </Box>
-            </group>
-            <group position={[0.15, -0.1, 0]}>
-                <Box ref={rightLeg} args={[0.15, 0.6, 0.15]} position={[0, -0.3, 0]}>
-                    <meshStandardMaterial color={jointColor} />
-                </Box>
-            </group>
-        </group>
-    );
-}
-
-function Treadmill({ isDark }: { isDark: boolean }) {
-    const baseColor = isDark ? "#334155" : "#cbd5e1";
-    const beltColor = isDark ? "#1e293b" : "#94a3b8";
-
-    return (
-        <group position={[0, -0.5, 0]}>
-            <Box args={[1.5, 0.1, 2]} position={[0, 0, 0]}>
-                <meshStandardMaterial color={baseColor} />
-            </Box>
-            <Box args={[1.2, 0.11, 1.8]} position={[0, 0.01, 0]}>
-                <meshStandardMaterial color={beltColor} />
-            </Box>
-            <Box args={[0.1, 1, 0.1]} position={[0.6, 0.5, 0.9]} rotation={[-0.2, 0, 0]}>
-                <meshStandardMaterial color={baseColor} />
-            </Box>
-            <Box args={[0.1, 1, 0.1]} position={[-0.6, 0.5, 0.9]} rotation={[-0.2, 0, 0]}>
-                <meshStandardMaterial color={baseColor} />
-            </Box>
-            <group position={[0, 1, 0.8]} rotation={[-0.3, 0, 0]}>
-                <Box args={[1, 0.4, 0.1]}>
-                    <meshStandardMaterial color={baseColor} />
-                </Box>
-                <Text
-                    position={[0, 0.05, 0.06]}
-                    fontSize={0.08}
-                    color={isDark ? "#60a5fa" : "#2563eb"}
-                    anchorX="center"
-                    anchorY="middle"
-                >
-                    Training Model...
-                </Text>
-                <Text
-                    position={[0, -0.08, 0.06]}
-                    fontSize={0.12}
-                    color={isDark ? "#ef4444" : "#dc2626"}
-                    anchorX="center"
-                    anchorY="middle"
-                >
-                    99%
-                </Text>
-            </group>
-        </group>
-    );
-}
-
-// --- Movement Logic ---
-
-function MovingPlatform({ isDark }: { isDark: boolean }) {
-    const group = useRef<THREE.Group>(null);
-    const { viewport } = useThree();
-
-    useFrame((state) => {
-        if (!group.current) return;
-
-        const t = state.clock.getElapsedTime() * 0.5;
-
-        const width = viewport.width / 2 - 2;
-        const height = viewport.height / 2 - 2;
-
-        const angle = t;
-        const clampedX = Math.max(-width, Math.min(width, Math.cos(angle) * width * 1.5));
-        const clampedY = Math.max(-height, Math.min(height, Math.sin(angle) * height * 1.5));
-
-        group.current.position.set(clampedX, clampedY, 0);
-        group.current.rotation.y = Math.sin(t) * 0.2;
-        group.current.rotation.z = Math.cos(t) * 0.05;
-    });
-
-    return (
-        <group ref={group} scale={0.6}>
-            <Robot isDark={isDark} />
-            <Treadmill isDark={isDark} />
-        </group>
-    );
-}
 
 // --- Neural Network Mesh ---
 
@@ -268,12 +110,7 @@ function Scene() {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
-    return (
-        <>
-            <NeuralNetwork isDark={isDark} />
-            <MovingPlatform isDark={isDark} />
-        </>
-    );
+    return <NeuralNetwork isDark={isDark} />;
 }
 
 export default function ThreeBackground() {

@@ -1,0 +1,120 @@
+\documentclass[a4paper,9pt]{article}
+
+\usepackage{latexsym}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{geometry}
+
+\geometry{left=0.5in, right=0.5in, top=0.4in, bottom=0.4in}
+
+\titleformat{\section}{\normalsize\bfseries}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{4pt}{3pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\setlist[itemize]{leftmargin=*, topsep=0pt, itemsep=0pt, parsep=0pt, partopsep=0pt}
+
+\pagenumbering{gobble}
+
+\begin{document}
+
+%-------------------- HEADER --------------------
+\begin{center}
+    {\large \textbf{Abhiraj Singh Rathore}} \\
+    Software Engineer II \;|\; Dubai, UAE \\
+    \href{mailto:abhiraj.rathoree@gmail.com}{abhiraj.rathoree@gmail.com} \;|\;
+    +91 9314225845 \;|\;
+    +971 521750314 \;|\;
+    \href{https://linkedin.com/in/abhirajrathoree}{LinkedIn}
+\end{center}
+
+\vspace{-4pt}
+
+%-------------------- SUMMARY --------------------
+\section*{Summary}
+Software Engineer II with 4+ years of experience building \textbf{distributed systems, real-time data pipelines, and AI infrastructure}. Proven ability to design \textbf{high-throughput backend systems}, optimize latency by \textbf{10×+}, and develop \textbf{fault-tolerant architectures} using Kafka, PostgreSQL, and GPU-based pipelines.
+
+%-------------------- SKILLS --------------------
+\section*{Technical Skills}
+\textbf{Languages:} Node.js, TypeScript, C\#, Python, React, Next.js \\
+\textbf{Systems:} Kafka, Distributed Systems, Microservices, Event-Driven Architecture \\
+\textbf{Databases:} PostgreSQL, MSSQL, MongoDB, Redis, PL/SQL \\
+\textbf{Cloud/DevOps:} AWS, Azure, Docker, CI/CD \\
+\textbf{Other:} REST APIs, GraphQL, Prometheus, Grafana
+
+%-------------------- EXPERIENCE --------------------
+\section*{Experience}
+
+\textbf{Software Engineer II} \hfill Dec 2023 -- Present \\
+KGK Diamonds DMCC, Dubai
+\begin{itemize}
+    \item Reduced API latency from \textbf{51s to 5s (10× improvement)} through query optimization, caching, and parallel processing.
+    \item Designed a \textbf{Kafka-based distributed system} for real-time inventory synchronization across ERP, CRM, and e-commerce platforms spanning multiple regions.
+    \item Built a \textbf{high-concurrency bidding platform} supporting transactions for \textbf{\$50M+ inventory per event}.
+    \item Developed real-time financial pipelines processing \textbf{\$300M+ receivables}, eliminating manual workflows.
+    \item Implemented \textbf{PostgreSQL SKIP LOCKED} for distributed job processing, ensuring safe concurrency.
+    \item Improved observability using \textbf{Prometheus and Grafana}, reducing incident detection time by \textbf{40\%}.
+\end{itemize}
+
+\vspace{2pt}
+\textbf{AI Infrastructure \& Systems}
+\begin{itemize}
+    \item Designed a \textbf{GPU-based inference pipeline} achieving \textbf{95\% utilization} using batching and async processing.
+    \item Built a \textbf{model orchestration system} across VGG, ViT, and VOLO architectures.
+    \item Implemented \textbf{zero-downtime deployment} with shadow testing and fallback mechanisms.
+    \item Managed \textbf{multi-GPU infrastructure} with resource control and real-time telemetry.
+\end{itemize}
+
+\vspace{2pt}
+\textbf{Associate Software Engineer} \hfill Jun 2023 -- Dec 2023 \\
+Sigma Infosolutions, Ahmedabad
+\begin{itemize}
+    \item Developed \textbf{multi-tenant microservices} using Node.js, C\#, and MongoDB.
+    \item Reduced build times by \textbf{50\%} through optimized architecture.
+    \item Built reusable UI systems improving frontend productivity by \textbf{2×}.
+\end{itemize}
+
+\vspace{2pt}
+\textbf{Full Stack Developer} \hfill May 2022 -- May 2023 \\
+Blokminers.io
+\begin{itemize}
+    \item Built NFT marketplace and ticketing platforms using React, Node.js, and MongoDB.
+    \item Enabled secure and scalable digital asset transactions.
+\end{itemize}
+
+%-------------------- PROJECTS --------------------
+\section*{Projects}
+
+\textbf{Real-Time Inventory Synchronization System}
+\begin{itemize}
+    \item Built a \textbf{Kafka-based event-driven system} integrating ERP, CRM, and e-commerce platforms.
+    \item Implemented retry handling, idempotency, and fault-tolerant pipelines.
+\end{itemize}
+
+\vspace{2pt}
+\textbf{AI-Powered Diamond Grading Platform}
+\begin{itemize}
+    \item Developed a \textbf{distributed GPU inference system} for high-throughput image processing.
+    \item Designed intelligent model routing and production-grade deployment strategies.
+\end{itemize}
+
+\vspace{2pt}
+\textbf{Data Warehouse \& Reporting Pipeline}
+\begin{itemize}
+    \item Built real-time reporting pipelines integrating Zoho CRM and ERP systems.
+    \item Automated financial reporting for \textbf{\$300M+ datasets}.
+\end{itemize}
+
+%-------------------- EDUCATION --------------------
+\section*{Education}
+
+\textbf{M.Tech, AI \& Data Science} \hfill 2026 \\
+IIT Patna
+
+\vspace{2pt}
+\textbf{B.Tech, Electronics \& Computer Science} \hfill 2023 \\
+MBM Engineering College
+
+\end{document}

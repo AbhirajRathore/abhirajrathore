@@ -2,7 +2,6 @@
 
 import styles from "./Hero.module.css";
 import Link from "next/link";
-import Image from "next/image";
 import {
     motion,
     useMotionValue,
@@ -14,8 +13,27 @@ import { useEffect, useRef, useCallback } from "react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+// green-screen chroma key thresholds
+const GREEN_MIN       = 40;
+const GREEN_DIFF_SOFT = 8;
+const GREEN_DIFF_HARD = 28;
+
+const CHIPS = [
+    { label: "TypeScript", delay: 0    },
+    { label: "Node.js",    delay: 0.08 },
+    { label: "React.js",   delay: 0.16 },
+    { label: "Kafka",      delay: 0.24 },
+    { label: "PostgreSQL", delay: 0.32 },
+    { label: "Redis",      delay: 0.40 },
+    { label: "Docker",     delay: 0.48 },
+    { label: "AWS",        delay: 0.56 },
+];
+
 export default function Hero() {
-    const ref = useRef<HTMLElement>(null);
+    const ref      = useRef<HTMLElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
     const mx = useMotionValue(0.5);
     const my = useMotionValue(0.5);
     const sx = useSpring(mx, { stiffness: 40, damping: 30 });
@@ -40,19 +58,63 @@ export default function Hero() {
         return () => el?.removeEventListener("mousemove", onMove);
     }, [onMove]);
 
+    // green-screen chroma key
+    useEffect(() => {
+        const video  = videoRef.current;
+        const canvas = canvasRef.current;
+        if (!video || !canvas) return;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        if (!ctx) return;
+
+        let animId: number;
+        const diffRange = GREEN_DIFF_HARD - GREEN_DIFF_SOFT;
+
+        const processFrame = () => {
+            if (video.paused || video.ended) {
+                animId = requestAnimationFrame(processFrame);
+                return;
+            }
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const d = frame.data;
+            for (let i = 0; i < d.length; i += 4) {
+                const r = d[i], g = d[i + 1], b = d[i + 2];
+                const diff = g - Math.max(r, b);
+                if (g < GREEN_MIN || diff < GREEN_DIFF_SOFT) continue;
+                d[i + 3] = diff >= GREEN_DIFF_HARD
+                    ? 0
+                    : Math.round((1 - (diff - GREEN_DIFF_SOFT) / diffRange) * 255);
+            }
+            ctx.putImageData(frame, 0, 0);
+            animId = requestAnimationFrame(processFrame);
+        };
+
+        const onReady = () => {
+            canvas.width  = video.videoWidth  || 480;
+            canvas.height = video.videoHeight || 600;
+            processFrame();
+        };
+
+        video.addEventListener("loadeddata", onReady);
+        if (video.readyState >= 2) onReady();
+
+        return () => {
+            video.removeEventListener("loadeddata", onReady);
+            cancelAnimationFrame(animId);
+        };
+    }, []);
+
     const nameLines = ["Abhiraj", "Rathore."];
 
     return (
         <section ref={ref} className={styles.hero}>
-            <motion.div
-                className={styles.spotlight}
-                style={{ background: spotlightBg }}
-            />
+            <motion.div className={styles.spotlight} style={{ background: spotlightBg }} />
             <div className={styles.grain} />
             <div className={styles.amb1} />
             <div className={styles.amb2} />
 
             <div className={styles.layout}>
+                {/* ── Left: text ──────────────────────────────── */}
                 <div className={styles.text}>
                     <motion.div
                         className={styles.tag}
@@ -71,11 +133,7 @@ export default function Hero() {
                                     className={styles.clipInner}
                                     initial={{ y: "120%" }}
                                     animate={{ y: "0%" }}
-                                    transition={{
-                                        duration: 0.85,
-                                        delay: 0.12 + i * 0.1,
-                                        ease,
-                                    }}
+                                    transition={{ duration: 0.85, delay: 0.12 + i * 0.1, ease }}
                                 >
                                     {word}
                                 </motion.span>
@@ -97,8 +155,7 @@ export default function Hero() {
                         transition={{ duration: 0.6, delay: 0.55 }}
                     >
                         Building performant distributed systems &amp; elegant
-                        full-stack experiences with obsessive attention to
-                        craft.
+                        full-stack experiences with obsessive attention to craft.
                     </motion.p>
 
                     <motion.div
@@ -109,20 +166,8 @@ export default function Hero() {
                     >
                         <Link href="#projects" className={styles.primary}>
                             <span>View Work</span>
-                            <svg
-                                className={styles.arrow}
-                                width="18"
-                                height="18"
-                                viewBox="0 0 18 18"
-                                fill="none"
-                            >
-                                <path
-                                    d="M4 9h10M10.5 5L14 9l-3.5 4"
-                                    stroke="currentColor"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
+                            <svg className={styles.arrow} width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                <path d="M4 9h10M10.5 5L14 9l-3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </Link>
                         <Link href="/contact" className={styles.ghost}>
@@ -137,27 +182,22 @@ export default function Hero() {
                         transition={{ duration: 0.7, delay: 0.85 }}
                     >
                         {[
-                            { n: "3+", l: "Years" },
+                            { n: "3+",  l: "Years"    },
                             { n: "20+", l: "Projects" },
-                            { n: "5+", l: "Systems" },
+                            { n: "5+",  l: "Systems"  },
                         ].map((m, i) => (
                             <div key={m.l} className={styles.metric}>
-                                {i > 0 && (
-                                    <span className={styles.metricDiv} />
-                                )}
+                                {i > 0 && <span className={styles.metricDiv} />}
                                 <div className={styles.metricInner}>
-                                    <span className={styles.metricN}>
-                                        {m.n}
-                                    </span>
-                                    <span className={styles.metricL}>
-                                        {m.l}
-                                    </span>
+                                    <span className={styles.metricN}>{m.n}</span>
+                                    <span className={styles.metricL}>{m.l}</span>
                                 </div>
                             </div>
                         ))}
                     </motion.div>
                 </div>
 
+                {/* ── Right: avatar + chips ────────────────────── */}
                 <motion.div
                     className={styles.avatarCol}
                     initial={{ opacity: 0, scale: 0.94, y: 30 }}
@@ -166,28 +206,55 @@ export default function Hero() {
                 >
                     <div className={styles.glow} />
                     <div className={styles.frame}>
-                        <Image
-                            src="/nobg.png"
-                            alt="Abhiraj Singh Rathore"
-                            width={600}
-                            height={700}
-                            priority
-                            className={styles.img}
+                        <video
+                            ref={videoRef}
+                            autoPlay loop muted playsInline
+                            src="/Video_Editing_Black_to_Green2.mp4"
+                            className={styles.hiddenVideo}
                         />
+                        <canvas ref={canvasRef} className={styles.vid} />
+                    </div>
+
+                    {/* tech chips */}
+                    <div className={styles.chips}>
+                        {CHIPS.map((chip) => (
+                            <motion.span
+                                key={chip.label}
+                                className={styles.chip}
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.35, delay: 0.9 + chip.delay, ease: "easeOut" }}
+                            >
+                                {chip.label}
+                            </motion.span>
+                        ))}
                     </div>
                 </motion.div>
             </div>
 
+            {/* ── Apple-style scroll cue ───────────────────────── */}
             <motion.div
-                className={styles.scroll}
+                className={styles.scrollCue}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1.3, duration: 0.7 }}
+                transition={{ delay: 1.6, duration: 0.8 }}
             >
-                <span className={styles.scrollTxt}>Scroll</span>
-                <div className={styles.scrollTrack}>
-                    <div className={styles.scrollThumb} />
+                <span className={styles.scrollLabel}>Scroll</span>
+                <div className={styles.mouse}>
+                    <motion.div
+                        className={styles.mouseDot}
+                        animate={{ y: [0, 8, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    />
                 </div>
+                <motion.svg
+                    className={styles.chevron}
+                    width="16" height="10" viewBox="0 0 16 10" fill="none"
+                    animate={{ y: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.1 }}
+                >
+                    <path d="M1 1l7 7 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </motion.svg>
             </motion.div>
         </section>
     );
